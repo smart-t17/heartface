@@ -1,0 +1,10 @@
+---
+# NOTE: order matters here. The handlers are run in the order specified here.
+  - name: restart uwsgi
+    service: name=uwsgi state=restarted
+  - name: reload systemd
+    service: daemon-reload=yes
+  - name: restart nginx
+    service: name=nginx state=restarted
+  - name: restart postgresql
+    service: name=postgresql state=restarted

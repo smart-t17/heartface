@@ -1,0 +1,38 @@
+# Development requirements
+-r base.txt
+
+piprot
+pipdeptree
+django-debug-toolbar==1.9.1
+django-extensions==1.9.8
+ipython
+ipdb
+#Markdown==2.6.6
+pip-tools==1.11.0
+Werkzeug
+certifi==2017.11.5
+ecdsa==0.13
+
+Fabric3==1.13.1.post1
+# Formic python3 port
+-e "git+https://github.com/scottbelden/formic.git#egg=formic"
+ansible==2.4.2.0
+paramiko==2.4.0
+pycrypto==2.6.1
+# Needed during build/deployment
+Jinja2==2.10
+coloredlogs==7.3.1
+django-nose==1.4.5
+nose==1.3.7
+factory_boy==2.9.2
+sure==1.4.7
+mock==2.0.0
+nose-parameterized==0.6.0
+yanc
+requests-oauthlib>=0.8.0
+
+# For sending messages to Slack upon deployment
+slacker-cli==0.4.0
+
+python-dateutil
+pygments

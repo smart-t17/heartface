@@ -1,0 +1,8 @@
+# Install files into the build directory by copying (->), linking (~>)
+#  or templating (=>). Note: omit leading slash.
+#
+# E.g.:
+# some/project/file => somewhere/else/in_the/deployment/tree
+#
+conf/environment.py => heartface/settings/environment.py
+conf/environment.py => crawlers/settings/environment.py

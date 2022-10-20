@@ -1,0 +1,8 @@
+letsencrypt_email: admin@heartface.tv
+domain_name: heartface.tv
+domain_list:
+  - www.heartface.tv
+  - secure.heartface.tv
+  - api.heartface.tv
+sentry_domain_name: sentry.heartface.tv
+ghost_domain_name: blog.heartface.tv

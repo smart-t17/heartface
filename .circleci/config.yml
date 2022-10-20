@@ -1,0 +1,75 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/backend
+    environment:
+      POSTGRES_DB: heartface
+      POSTGRES_USER: heartface_user
+      POSTGRES_PASSWORD: heartface_password
+      POSTGRES_PORT: 5432
+      REDIS_PORT: 6379
+      ELASTIC_PORT: 9200
+    docker:
+      - image: circleci/python:3.5
+      - image: circleci/postgres:10.5
+        environment:
+          POSTGRES_DB: heartface
+          POSTGRES_USER: heartface_user
+          POSTGRES_PASSWORD: heartface_password
+      - image: circleci/redis:4.0
+      - image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps9-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/development.txt" }}
+      - run:
+          command: |
+            python -m venv .venv
+            source .venv/bin/activate
+            pip install --upgrade pip
+            pip install --upgrade setuptools
+            pip install -r requirements/development.txt
+      - save_cache:
+          key: deps9-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/development.txt" }}
+          paths:
+            - ".venv"
+
+      - run:
+          name: Check that all migrations are done
+          command: |
+            source .venv/bin/activate
+            ./manage makemigrations --dry-run --check
+
+      - run:
+          name: Run application test
+          command: |
+            source .venv/bin/activate
+            ./manage test -v 3 tests
+  deploy-stage:
+    docker:
+      - image: circleci/python:3.5
+    working_directory: ~/backend
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps9-{{ .Branch }}-{{ checksum "requirements/base.txt" }}-{{ checksum "requirements/development.txt" }}
+      - add_ssh_keys:
+          fingerprints:
+            - "24:3c:4a:e1:ef:41:83:ef:7b:2e:0b:34:c1:65:94:c6"
+      - run:
+          name: Deploy to dev.heartface.tv
+          command: |
+            source .venv/bin/activate
+            fab deploy:target=staging
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-stage:
+          requires:
+            - build
+          filters:
+            branches:
+              only: development

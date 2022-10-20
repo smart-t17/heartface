@@ -1,0 +1,202 @@
+[
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "sizes",
+                "selector": ".c-product-sizes__ul label"
+            }
+        ],
+        "testUrl": "https://www.urbanoutfitters.com/en-gb/shop/new-balance-574-olive-trainers?category=mens-shoes&color=031",
+        "urlPattern": "(http(s)?://)?(.*\\.)?urbanoutfitters.com.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "offerPrice",
+                "selector": "meta[og:price:amount]"
+            },
+            {
+                "name": "sizes",
+                "selector": ".attr-size label"
+            }
+        ],
+        "testUrl": "https://www.timberland.co.uk/shop/en/tbl-uk/men-footwear/mens-flyroam-oxford-shoe-navy-a1obs431#hero=0",
+        "urlPattern": "(http(s)?://)?(.*\\.)?timberland.co.uk.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "filters": [
+                    {
+                        "args": [
+                            "data-currency-gbp"
+                        ],
+                        "type": "attribute"
+                    }
+                ],
+                "name": "offerPrice",
+                "selector": "p.currentprice span.money"
+            },
+            {
+                "name": "sizes",
+                "selector": ".choices-eh label"
+            }
+        ],
+        "testUrl": "https://www.urbanindustry.co.uk/collections/shoes/products/vans-old-skool-shoes-double-light-gum-metal",
+        "urlPattern": "(http(s)?://)?(.*\\.)?urbanindustry.co.uk.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "offerPrice",
+                "selector": "div[data-test=product-price]"
+            },
+            {
+                "name": "sizes",
+                "selector": "input[for=skuAndSize]"
+            }
+        ],
+        "testUrl": "https://www.nike.com/gb/t/flyknit-trainer-shoe-GBXjsV/AH8396-600",
+        "urlPattern": "(http(s)?://)?(.*\\.)?nike.com.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "sizes",
+                "selector": "select#sizeShoe option"
+            },
+            {
+                "name": "colourway",
+                "selector": ".productColour"
+            }
+        ],
+        "testUrl": "https://www.offspring.co.uk/view/product/offspring_catalog/1,22/1662300000",
+        "urlPattern": "(http(s)?://)?(.*\\.)?offspring.co.uk.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "sizes",
+                "selector": "div.sizedrops span.inline-block:contains(Size)"
+            }
+        ],
+        "testUrl": "https://www.footasylum.com/vans-old-skool-trainer-083280/",
+        "urlPattern": "(http(s)?://)?(.*\\.)?footasylum.com.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "sizes",
+                "selector": "select#attr-size option"
+            },
+            {
+                "name": "colourway",
+                "selector": ".product-content-form-attr-selected"
+            }
+        ],
+        "testUrl": "https://www.vans.co.uk/shop/en-gb/vans-gb/checkerboard-classic-slip-on-shoes-veyebww",
+        "urlPattern": "(http(s)?://)?(.*\\.)?vans.co.uk.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "title",
+                "selector": "section.product-info > div.row > div.columns:first-of-type  h1"
+            },
+            {
+                "name": "sizes",
+                "selector": "ul[data-attr=size] li span:not(:contains(EU))"
+            },
+            {
+                "name": "colourway",
+                "selector": "section.product-info div[style*=block].selected-color > div.insert"
+            }
+        ],
+        "testUrl": "https://www.newbalance.co.uk/men/shoes/lifestyle/classic-574/574-retro-surf/ML574-RTS.html?dwvar_ML574-RTS_color=Gunmetal_with_Steel#color=Gunmetal_with_Steel&width=D",
+        "urlPattern": "(http(s)?://)?(.*\\.)?newbalance.co.uk.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "sizes",
+                "selector": ".hidden-element button"
+            },
+            {
+                "name": "colourway",
+                "selector": ".product-attribute-list li:eq(2)"
+            }
+        ],
+        "testUrl": "https://www.flightclub.com/nike-air-trainer-max-91-qs-nfl-wlf-gry-wht-blck-mtl-oakland-060346",
+        "urlPattern": "(http(s)?://)?(.*\\.)?flightclub.com.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "sizes",
+                "selector": "div[data-auto-id=size-selector] select option"
+            },
+            {
+                "name": "colourway",
+                "selector": ".color_text___1p8n8"
+            },
+            {
+                "name": "title",
+                "selector": ".product_category___2txJk .subtitle___2Km_d, .product_information_title___3W4Bd"
+            }
+        ],
+        "testUrl": "https://www.adidas.co.uk/nmd_r1-stlt-primeknit-shoes/CQ2391.html",
+        "urlPattern": "(http(s)?://)?(.*\\.)?adidas.co.uk.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "filters": [
+                    {
+                        "args": [
+                            ".brandName"
+                        ],
+                        "type": "exclude"
+                    }
+                ],
+                "name": "title",
+                "selector": "#itemTitle h1"
+            },
+            {
+                "name": "brand",
+                "selector": ".brandName"
+            },
+            {
+                "name": "sizes",
+                "selector": "#sizes option"
+            }
+        ],
+        "testUrl": "https://www.schuh.co.uk/mens/lacoste-bayliss-white-trainers/3420721070/",
+        "urlPattern": "(http(s)?://)?(.*\\.)?schuh.co.uk.*"
+    },
+    {
+        "api": "/api/product",
+        "rules": [
+            {
+                "name": "sizes",
+                "selector": ".sizeButtons a"
+            },
+            {
+                "name": "colourway",
+                "selector": "span[id$=colourName]"
+            }
+        ],
+        "testUrl": "https://www.sportsdirect.com/nike-flex-2017-running-trainers-ladies-214272?colcode=21427224",
+        "urlPattern": "(http(s)?://)?(.*\\.)?sportsdirect.com.*"
+    }
+]

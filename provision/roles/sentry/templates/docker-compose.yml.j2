@@ -1,0 +1,62 @@
+# See docs.getsentry.com/on-premise/server/ for full instructions
+
+version: '3.4'
+
+x-defaults: &defaults
+  restart: unless-stopped
+  build: .
+  depends_on:
+    - redis
+    - postgres
+    - memcached
+    - smtp
+
+  environment:
+    # Run `docker-compose run web config generate-secret-key`
+    # to get the SENTRY_SECRET_KEY value.
+    SENTRY_SECRET_KEY: '{{ sentry_secret_key }}'
+    SENTRY_MEMCACHED_HOST: memcached
+    SENTRY_REDIS_HOST: redis
+    SENTRY_POSTGRES_HOST: postgres
+    SENTRY_EMAIL_HOST: smtp
+    SENTRY_SERVER_EMAIL: 'sentry@heartface.tv'
+  volumes:
+    - sentry-data:/var/lib/sentry/files
+
+
+services:
+  smtp:
+    restart: unless-stopped
+    image: tianon/exim4
+
+  memcached:
+    restart: unless-stopped
+    image: memcached:1.4
+
+  redis:
+    restart: unless-stopped
+    image: redis:3.2-alpine
+
+  postgres:
+    restart: unless-stopped
+    image: postgres:9.5
+    volumes:
+      - sentry-postgres:/var/lib/postgresql/data
+
+  web:
+    <<: *defaults
+    ports:
+      - '9000:9000'
+
+  cron:
+    <<: *defaults
+    command: run cron
+
+  worker:
+    <<: *defaults
+    command: run worker
+
+
+volumes:
+    sentry-data:
+    sentry-postgres:

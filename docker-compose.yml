@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile.dev
+      context: .
+    environment:
+      ELASTIC_HOST: elasicsearch
+      ELASTIC_PORT: 9200
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_NAME: heartface
+      POSTGRES_USER: heartface
+      POSTGRES_PASSWORD: heartface
+    links:
+      - db
+      - redis
+      - elasticsearch
+    ports:
+      - 8000:8000
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.2.1
+    ports:
+      - 19200:9200
+    volumes:
+      - elasticdata:/usr/share/elasticsearch/data
+  redis:
+    image: redis:4.0
+    ports:
+      - 16379:6379
+    volumes:
+      - redisdata:/data
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: heartface
+      POSTGRES_USER: heartface
+      POSTGRES_PASSWORD: heartface
+    ports:
+      - 15432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
+  elasticdata: {}
+  redisdata: {}

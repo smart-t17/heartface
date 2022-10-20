@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# POST, PUT, PATCH
+
+. ./00_settings
+
+method=$1
+shift
+
+if [[ $1 =~ https?://.* ]] ; then                                                                                                                                                                             
+   uri=$1                                                                                                                                                                                                   
+elif [[ $1 =~ ^/.* ]] ; then
+   uri=$base_url$1
+else
+   uri=$base_url/api/$1
+fi      
+
+if [[ $uri =~ .*/rest-auth/.* ]] ; then
+    auth=""
+fi
+
+if [[ $uri = *"/upload/"* ]] ; then
+    upload_params=(-H "Content-Disposition: attachment; filename=upload.mp4" --data-binary @-)
+else
+    upload_params=(-d @-)
+fi
+
+echo $uri
+echo $auth
+
+shift
+
+#curl "${auth[@]}" -X POST -d @- $* $uri
+
+#curl "${auth[@]}" -X $method -d @- -H "Content-Type: application/json" -H "Content-Disposition: attachment; filename=upload.mp4" $* $uri #| python -m json.tool | pygmentize -l json
+curl "${auth[@]}" "${upload_params[@]}" -X $method -H "Content-Type: application/json" $* $uri | tee >(python -m json.tool | pygmentize -l json)
+#curl "${auth[@]}" -X $method -d @- -H "Content-Type: application/json" $* $uri | python -m json.tool | pygmentize -l json

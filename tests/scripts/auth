@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. ./00_settings
+
+curl -X POST -d '{"username": "'$1'", "password":"'$2'"}' -H "Content-Type: application/json" $base_url/rest-auth/login/ | tee >(jq -r .key > $auth_file)

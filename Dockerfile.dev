@@ -1,0 +1,13 @@
+FROM python:3.6
+
+# This file is used to build development version of application
+
+EXPOSE 8000
+
+COPY requirements/ /requirements
+RUN pip install -r requirements/development.txt
+
+COPY . /opt/project
+WORKDIR /opt/project
+
+CMD /opt/project/entrypoint.sh

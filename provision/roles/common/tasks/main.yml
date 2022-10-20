@@ -1,0 +1,167 @@
+---
+  - name: Install prerequisits for installation
+    apt: name={{ item }} state=latest
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+      - software-properties-common
+
+  - name: add 3rd party apt repository keys
+    apt_key: url='{{ item }}'
+    with_items:
+      - https://nginx.org/packages/keys/nginx_signing.key
+      - https://www.postgresql.org/media/keys/ACCC4CF8.asc
+      - https://download.docker.com/linux/debian/gpg
+
+  - name: add 3rd party repositories
+    apt_repository: repo='{{ item }}'
+    with_items:
+      - deb http://nginx.org/packages/debian/ stretch nginx
+      - deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main
+      - deb [arch=amd64] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable
+
+  - name: install packages
+    apt: name={{ item }} state=latest
+    with_items:
+      - python3.5
+      - python3.5-dev
+      - python-virtualenv
+      - python-pip
+      - libpython3.5-dev
+      - python-psycopg2
+      - nginx
+      - uwsgi
+      - uwsgi-plugin-python3
+      - sudo
+      - certbot
+      - ntp
+      - ntpdate
+      - postgresql
+      - libpq-dev
+      - libffi-dev
+      - gcc
+      - git
+      - docker-ce
+      - docker-compose
+      - redis-server
+
+  - name: create db users
+    postgresql_user: name={{ item.name }} password={{ item.password }} encrypted=yes role_attr_flags=NOCREATEDB,NOCREATEROLE,NOSUPERUSER
+    become: yes
+    become_user: postgres
+    with_items:
+      - { name: 'heartface', password: '3k2QxjXtXr' }
+
+  - name: create db
+    postgresql_db: name=heartface owner=heartface encoding='UTF-8'
+    become: yes
+    become_user: postgres
+
+  - name: create application specific directories
+    file: path={{ item }} owner=www-data group=www-data mode=0755 state=directory
+    with_items:
+      - /var/www/heartface/
+      - /var/www/heartface/media/
+      - /var/www/letsencrypt/
+      - /usr/local/lib/heartface/
+      - /var/lib/heartface/celery/
+      - /var/run/heartface/celery/
+
+  - name: upload nginx core config
+    copy: dest=/etc/nginx/nginx.conf src=nginx/nginx.conf
+    notify: restart nginx
+    register: upload_nginx_conf
+
+  - name: upload nginx default vhost
+    template: dest=/etc/nginx/sites-available/default src=nginx/default.j2
+    notify: restart nginx
+    register: upload_default_vhost
+
+  - name: reload nginx to apply changes before requesting letsencrypt
+    service: name=nginx state=reloaded
+    when: upload_default_vhost.changed or upload_nginx_conf.changed
+
+  - name: upload letsencrypt-acme-challenge config for nginx
+    copy: dest=/etc/nginx/letsencrypt-acme-challenge.conf src=nginx/letsencrypt-acme-challenge.conf
+
+  - name: generate SSL certificate with Let's encrypt certbot
+    shell: certbot certonly --cert-name {{ domain_name }} -n --webroot -w /var/www/letsencrypt/ -m {{ letsencrypt_email }} --agree-tos -d {{ domain_name }} {% if domain_list is defined and domain_list %} -d {{ domain_list | join(",") }} {% endif %}
+    args:
+      creates: /etc/letsencrypt/live/{{ domain_name }}/cert.pem
+
+  - name: deploy heartface.tv nginx config
+    template: src=nginx/heartface.j2 dest=/etc/nginx/sites-available/heartface
+    notify: restart nginx
+
+  - name: enable nginx sites
+    file: src=/etc/nginx/sites-available/{{ item }} dest=/etc/nginx/sites-enabled/{{ item }} state=link
+    with_items:
+      - default
+      - heartface
+    notify: restart nginx
+
+  - name: Add cron job to renew SSL certificate
+    cron:
+      name: letsencrypt
+      special_time: weekly
+      job: /usr/bin/certbot renew && /usr/sbin/service nginx reload
+
+  - name: install heartface celery services and flower
+    copy:
+      src: files/systemd/{{ item }}
+      dest: /etc/systemd/system/{{ item }}
+    with_items:
+      - celery-beat.service
+      - celery-worker.service
+      - flower.service
+    register: updated_services
+
+  - name: reload systemd
+    shell: systemctl daemon-reload
+    when: updated_services.changed
+
+  - name: ensure celery services are enabled and running
+    service: name={{ item }} state=started enabled=yes
+    with_items:
+      - celery-beat.service
+      - celery-worker.service
+      - flower.service
+
+  - name: install UWSGI configuration for heartface app
+    copy:
+      src: files/uwsgi/heartface.ini
+      dest: /etc/uwsgi/apps-available/heartface.ini
+    notify: restart uwsgi
+
+  - name: enable UWSGI configuration for heartface app
+    file:
+      src: /etc/uwsgi/apps-available/heartface.ini
+      dest: /etc/uwsgi/apps-enabled/heartface.ini
+      state: link
+    notify: restart uwsgi
+
+  - name: enable UWSGI daemon
+    service: name=uwsgi state=started enabled=yes
+
+  # Set restart policy for daemons
+  - name: create override directories for systemd
+    file: path=/etc/systemd/system/{{ item }}.service.d owner=root group=root mode=0755 state=directory
+    with_items:
+      - nginx
+      - uwsgi
+
+  - name: Override Nginx service unit config to restart after crash
+    ini_file:
+        path: "/etc/systemd/system/{{ item }}.service.d/override.conf"
+        section: Service
+        option: Restart
+        value: always
+        no_extra_spaces: yes
+        mode: 644
+    with_items:
+      - nginx
+      - uwsgi
+    notify:
+      - reload systemd
+      - restart {{ item }}
+    tags: systemd_override

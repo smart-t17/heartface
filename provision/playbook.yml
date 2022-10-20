@@ -1,0 +1,12 @@
+---
+- hosts: all
+  remote_user: root
+  roles:
+    - role: common
+    - role: smtp
+      exim4_dc_use_split_config: 'true'
+      exim4_dc_eximconfig_configtype: 'internet'
+    - role: elasticsearch
+      tags: es
+    - role: sentry
+    - role: ghost

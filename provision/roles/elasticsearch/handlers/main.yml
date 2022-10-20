@@ -1,0 +1,5 @@
+- name: restart elasticsearch
+  systemd:
+    state: restarted
+    daemon-reload: yes
+    name: elasticsearch

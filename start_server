@@ -1,0 +1,39 @@
+#!/bin/sh
+
+SESSION='heartface-dev'
+PORT=8018
+# TODO: use select-layout to set layout
+#  add sample layouts -> could use a (yet another)
+#  yaml config
+#  5 pane layout: select-layout '3ed3,159x41,0,0{79x41,0,0[79x20,0,0,0,79x20,0,21,4],79x41,80,0[79x10,80,0,1,79x9,80,11,3,79x20,80,21,2]}'
+
+if $(tmux has-session -t $SESSION 2>&1 > /dev/null) ; then
+    tmux attach-session -d -t $SESSION
+else
+    tmux -2 new-session -d -s $SESSION
+
+    # Left pane
+    tmux send-keys '. env/bin/activate' Enter
+    tmux send-keys "docker-compose up" Enter
+    
+
+    # Right pane
+    tmux split-window -h
+    tmux send-keys '. env/bin/activate' Enter
+
+    # Bottom left pane
+    tmux select-pane -t 0
+    tmux split-window
+
+    tmux send-keys '. env/bin/activate' Enter
+
+    tmux send-keys 'while true ; do ./manage runserver_plus ' $PORT '; echo -e "\033[1;33mRestarting...\033[0;m" ; sleep 2  ; done' Enter
+
+    tmux select-pane -t 0
+    tmux split-window
+    tmux send-keys '. env/bin/activate' Enter
+    tmux send-keys 'while true ; do celery -A heartface worker -l info -B ; sleep 2; done' Enter
+    tmux select-pane -t bottom-right
+
+    tmux -2 attach-session -t $SESSION
+fi

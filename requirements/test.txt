@@ -1,0 +1,3 @@
+# Requierements needed for running tests.
+
+-r base.txt

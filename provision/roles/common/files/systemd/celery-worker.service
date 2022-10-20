@@ -1,0 +1,14 @@
+[Unit]
+Description=Heartface Celery Worker
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/usr/local/lib/heartface/current
+ExecStart=/usr/local/lib/heartface/current/env/bin/celery worker -A heartface --loglevel=INFO
+Restart=always
+Environment=PATH=/usr/local/lib/heartface/current/env/bin:/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[Install]
+WantedBy=multi-user.target

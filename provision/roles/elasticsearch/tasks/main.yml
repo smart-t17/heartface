@@ -1,0 +1,43 @@
+---
+  - name: Install prerequisits for installation
+    apt: name={{ item }} state=latest
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+      - software-properties-common
+
+  - name: add 3rd party repository keys
+    apt_key: url='https://artifacts.elastic.co/GPG-KEY-elasticsearch'
+
+  - name: add 3rd party repositories
+    apt_repository: repo='deb https://artifacts.elastic.co/packages/6.x/apt stable main'
+
+  - name: install packages
+    apt: name={{ item.name }} state={{ item.state }} force=yes
+    with_items:
+      - { name: 'elasticsearch=6.2.1', state: 'present' }
+      - { name: 'openjdk-8-jre-headless', state: 'latest' }
+
+  - name: enable ElasticSearch service
+    service: name=elasticsearch enabled=yes
+
+  - name: start ElasticSearch service
+    service: name=elasticsearch state=started
+
+  - name: Systemd dir for override
+    file:
+      path: /etc/systemd/system/elasticsearch.service.d
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Override Elasticsearch service unit config to restart after crash
+    ini_file:
+      path: "/etc/systemd/system/elasticsearch.service.d/override.conf"
+      section: Service
+      option: Restart
+      value: always
+      no_extra_spaces: yes
+      mode: 644
+    notify: elasticsearch

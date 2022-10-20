@@ -1,0 +1,37 @@
+#!/bin/bash
+set -e
+
+. ./00_settings
+
+if [[ $1 =~ https?://.* ]] ; then
+   uri=$1
+else
+   uri=$base_url/api/$1
+fi
+
+shift
+#echo $uri
+echo curl "${auth[@]}" $@ $uri
+curl "${auth[@]}" $@ -L $uri | tee >(echo ; python -m json.tool | pygmentize -l json)
+
+exit
+
+# create a temporary named pipe
+PIPE=$(mktemp -u)
+mkfifo $PIPE
+# attach it to file descriptor 3
+exec 3<>$PIPE
+# unlink the named pipe
+
+
+HTTP_STATUS=$(curl "${auth[@]}" -q -w "%{http_code}" -o >(cat >$PIPE) $@ $uri)
+
+if [ $HTTP_STATUS -lt 300 ] ; then
+    echo Won $HTTP_STATUS
+    jq . $PIPE
+else
+    cat <&3
+    echo Http status: $HTTP_STATUS
+fi
+
+rm $PIPE

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+. ./00_settings
+
+TOKEN=$1
+DATA='{"access_token": "'$TOKEN'"}'
+echo "Request: \n " '{"access_token": "'$TOKEN'", "oauth_backend":"facebook"}'
+curl -X POST -v -d '{"access_token": "'$TOKEN'"}' -H "Content-Type: application/json" $base_url/rest-auth/facebook/ | tee >(jq -r .token > $auth_file)
+#curl -X POST -v -d '{"code": "'$TOKEN'"}' -H "Content-Type: application/json" $base_url/rest-auth/facebook/ | tee >(jq -r .token > $auth_file)

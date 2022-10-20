@@ -1,0 +1,99 @@
+{% extends "admin/change_list.html" %}
+{% block content %}
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+<style>
+    .daterangepicker .drp-calendar
+      {
+        max-width:100%!important;
+      }
+    h1
+      {
+        display:none;
+      }
+
+    table
+      {
+        border:1px solid #ccc;
+      }
+</style>
+
+<h2>ADMIN ANALYTICS</h2>
+<form action="" method="post" style="float:right">
+  Select date range: <br />
+  {% csrf_token %}
+  <input type="text" name="daterange" value="{{ date_range }}" />
+  <button type="submit" value="Submit">Submit</button>
+</form>
+
+<table style="width:50%" class="table">
+  <tr>
+    <td>Total registered users</td>
+    <td>{{ registered_users }}</td>
+  </tr>
+  <tr>
+    <td>Total videos</td>
+    <td>{{ total_video }}</td>
+  </tr>
+  <tr>
+    <td><a href="#" data-toggle="modal" data-target="#myModal" style="text-decoration:underline" >Total video creators</a></td>
+    <td><a href="#" data-toggle="modal" data-target="#myModal" style="text-decoration:underline" >{{ video_creators | length }}</a></td>
+  </tr>
+  <tr>
+    <td>Total views</td>
+    <td>{{ total_views }}</td>
+  </tr>
+  <tr>
+    <td>Long video count</td>
+    <td>{{ long_video }}</td>
+  </tr>
+  <tr>
+    <td>Medium video count</td>
+    <td>{{ medium_video }}</td>
+  </tr>
+  <tr>
+    <td>Short video count</td>
+    <td>{{ short_video }}</td>
+  </tr>
+</table>
+
+{% block object-tools %}
+    <a href="import-csv/?date_range={{ date_range }}" class="btn btn-default" >Export CSV</a>
+{% endblock %}
+
+<!-- Modal to display video creators -->
+<div id="myModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Video creators</h4>
+      </div>
+      <div class="modal-body">
+        {% for each in video_creators %}
+        <h6>{{ each }}</h6>
+        {% endfor %}
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+<script>
+$(function() {
+  $('input[name="daterange"]').daterangepicker({
+  locale: {
+    format: 'DD/M/Y',
+    opens:'right'
+  }
+  });
+});
+</script>
+{% endblock %}

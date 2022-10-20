@@ -1,0 +1,50 @@
+#!/bin/bash
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -n|--dry-run)
+    DRY_RUN=YES
+    shift # past argument
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+APP=$1
+DEST_TREEISH=$2
+
+if [ -z "$APP" -o -z "$DEST_TREEISH" ] ; then
+#if [ -z "$DEST_TREEISH" ] ; then
+
+    echo "Usage: " `basename $0` "[-n] <app_name> <tree-ish>"
+    exit 1
+fi
+
+CURR=`git rev-parse HEAD`
+CURR_FILE=$(mktemp)
+OTHER_FILE=$(mktemp)
+ROOT=$(git rev-parse --show-toplevel)
+
+git ls-tree $CURR  --name-only $ROOT/heartface/apps/core/migrations/ | sort | tee > $CURR_FILE
+git ls-tree $DEST_TREEISH --name-only $ROOT/heartface/apps/core/migrations/ | sort | tee > $OTHER_FILE
+
+#MIGRATION=$(diff -y -W 1024 $OTHER_FILE $CURR_FILE | grep '.*<' | sed 's/.*\/migrations\/\([0-9]\{4\}.*\)\.py.*/\1/' | head -n 1)
+
+MIGRATION=$(diff -u $OTHER_FILE $CURR_FILE | sed -n '/^[-+][^-+]/{x;p;d;} ; x' | sed 's/.*\/migrations\/\([0-9]\{4\}.*\)\.py.*/\1/' | head -n 1)
+if [ ! -z "$DRY_RUN" ] ; then
+    ACTION="echo "
+else
+    ACTION="$ROOT/manage"
+fi
+
+$ACTION migrate $APP $MIGRATION
+
+rm $CURR_FILE $OTHER_FILE

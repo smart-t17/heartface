@@ -1,0 +1,5 @@
+# Requirements needed for deployments (live, staging, etc.)
+
+-r base.txt
+
+gunicorn==19.7.1

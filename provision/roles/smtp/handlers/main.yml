@@ -1,0 +1,8 @@
+---
+# handlers file for exim4
+
+# Indeed we need to restart (since we're running it as a service)
+#  shell: /usr/sbin/update-exim4.conf
+
+- name: update exim4.conf
+  service: name=exim4 state=restarted
