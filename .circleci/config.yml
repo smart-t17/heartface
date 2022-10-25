@@ -57,7 +57,7 @@ jobs:
           fingerprints:
             - "24:3c:4a:e1:ef:41:83:ef:7b:2e:0b:34:c1:65:94:c6"
       - run:
-          name: Deploy to dev.heartface.tv
+          name: Deploy to dev.heartface.io
           command: |
             source .venv/bin/activate
             fab deploy:target=staging

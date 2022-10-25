@@ -57,11 +57,11 @@ class SyncPostman:
     def get_swagger_data(self):
         """
         get data from swagger endpoint
-        hardcoded to https://dev.heartface.tv/docs/?format=openapi
+        hardcoded to https://dev.heartface.io/docs/?format=openapi
         :return: None
         """
 
-        swagger_url = ('https://dev.heartface.tv{}?format=openapi'.format(reverse('swagger_docs')))
+        swagger_url = ('https://dev.heartface.io{}?format=openapi'.format(reverse('swagger_docs')))
         try:
             swagger_request = get(swagger_url)
             swagger_request.raise_for_status()

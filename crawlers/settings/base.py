@@ -75,12 +75,12 @@ EXTENSIONS = {
 }
 
 # Who to send scraping alerts to
-STATSMAILER_RCPTS = ['urvesh@heartface.tv']
+STATSMAILER_RCPTS = ['urvesh@heartface.io']
 # How many items minimum before alert email
 STATSMAILER_MIN_ITEMS_SCRAPED = 16000
 # How many errors in log before alert email
 STATSMAILER_MAX_ERRORS = 1
-MAIL_FROM = 'scrapy@heartface.tv'
+MAIL_FROM = 'scrapy@heartface.io'
 MAIL_HOST = 'smtp.sendgrid.net'
 MAIL_PORT = 587
 MAIL_USER = 'heartface'

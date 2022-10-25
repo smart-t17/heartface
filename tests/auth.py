@@ -15,9 +15,7 @@ from requests_oauthlib.compliance_fixes import facebook_compliance_fix
 from rest_framework import status
 from rest_framework.test import APITestCase
 from allauth.account.models import EmailAddress
-import sure
 
-# TOKEN = 'EAACoJvokeXABAMJl5SrWNKpZCCvZAsVWtbmbZCfPaOSnxIZCDR8FWSsIrrxGdMszZB01bPGZAuy0cvYzFzUxvDw59jvdQoKDhPDb6XVBk7z7kcE9uuiyRf84hZB3cibeKHKMZAjfvgZCdpPiG9vvZA3mX0ZALFF9XARIuPwKA0j0D23fTImUWRwy81BHwl6Ae9t0uQZD'
 from heartface.apps.core.models import User
 from tests.factories import ProductFactory, UserFactory
 from tests.utils import pp

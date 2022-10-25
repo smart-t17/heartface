@@ -470,7 +470,7 @@ CDN_FTP = 'ftp10.pushrcdn.com'
 CDN_USERNAME = '206'
 CDN_PASSWORD = 'QRCaHMEH'
 CDN_VIDEO_UPLOAD_PATH = '/media/upload/'
-CDN_FILES_BASE_URL = 'https://ticker.heartface.tv:8138/media/'
+CDN_FILES_BASE_URL = 'https://ticker.heartface.io:8138/media/'
 CDN_VIDEO_ROOT = '/video/'
 CDN_COVER_PICTURE_ROOT = '/thumb/'
 # Without the dot
@@ -486,10 +486,10 @@ CELERY_TASK_SERIALIZER = 'json'
 DATA_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024
 
 ELASTIC_URL = 'http://127.0.0.1:9200/'
-DEFAULT_FROM_EMAIL = 'noreply@heartface.tv'
-DEFAULT_CONFIRMATION_FROM_EMAIL = 'hello@heartface.tv'
-DEFAULT_ORDERS_FROM_EMAIL = 'orders@heartface.tv'
-DEFAULT_ADMIN_EMAIL = 'orders-admin@heartface.tv'
+DEFAULT_FROM_EMAIL = 'noreply@heartface.io'
+DEFAULT_CONFIRMATION_FROM_EMAIL = 'hello@heartface.io'
+DEFAULT_ORDERS_FROM_EMAIL = 'orders@heartface.io'
+DEFAULT_ADMIN_EMAIL = 'orders-admin@heartface.io'
 
 # Whether to use https urls in Elastic serialized models. (We want this by default.)
 ELASTIC_STORE_URLS_AS_HTTPS=True
@@ -561,4 +561,4 @@ SENDGRID_FOLLOW_UNSUB_GROUP_ID = '<replace_me>'
 SENDGRID_VIDEO_LIKES_TEMPLATE_ID= ''
 SENDGRID_VIDEO_COMMENT_TEMPLATE_ID= ''
 SENDGRID_FOLLOW_TEMPLATE_ID= ''
-SENDGRID_NOTIFICATIONS_EMAIL = "notifications@heartface.tv"
+SENDGRID_NOTIFICATIONS_EMAIL = "notifications@heartface.io"

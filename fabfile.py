@@ -35,14 +35,14 @@ CONFIG = {
         'static': '/var/www/heartface'
     },
     'staging': {
-        'hosts': ['root@dev.heartface.tv'],
+        'hosts': ['root@dev.heartface.io'],
         'dest': '/usr/local/lib/heartface/',
         'env_name': 'staging',
         'requirements': 'deployment',
         'static': '/var/www/heartface'
     },
     'production': {
-        'hosts': ['root@prod.heartface.tv'],
+        'hosts': ['root@prod.heartface.io'],
         'dest': '/usr/local/lib/heartface/',
         'env_name': 'deployment',
         'requirements': 'deployment',

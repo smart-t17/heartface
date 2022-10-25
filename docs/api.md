@@ -47,7 +47,7 @@ Response contains a (long-lived, opaque) token and the User object
     "photo": null,
     "description": null,
     "can_charge": true|false,
-    "url": "http://heartface.tv/api/v1/users/2/",
+    "url": "http://heartface.io/api/v1/users/2/",
   }
 }
 ```
