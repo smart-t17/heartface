@@ -1,99 +1,4 @@
-Creating a new project using this template
-==========================================
-
-This needs to be done in two steps due to the limitations of
-the django project template solution:
-
-1. Use the standard django-admin command:
-```
-$ django-admin.py startproject --template <path_or_url_of_template> <project_name> <dir>
-```
-
-Where ```path_or_url_of_template``` points to the template project (normally
-the directory where this README file is located), ```project_name``` is the
-name of the project as you'd like to call it and ```dir``` is the destination
-directory (can also be ```.```).
-
-2. Run the fixref script from the root of the newly created project to fix
-project name references in some of the generated files (where django didn't
-do so):
-```
-$ fixrefs <project_name>
-```
-
-Where ```project_name``` should be the same as above. After running this script
-you can remove it.
-
- 
-Project structure
-=================
-
-
-Runtime environments & settings & requirements
-----------------------------------------------
-
-To understand how settings and requirements are handled, we have
-to introduce the concept of the 'runtime environments'. These
-are simply the different configurations that the app will be run in,
-e.g.: development, deployment, staging, etc.
-
-+ development - used for locally developing the app. 
-+ deployment - used for deploying the app. This includes both
-                production and staging. To keep differences between
-                the two minimal, we don't use a separate production
-                environment, but only override the settings for staging.
-                (See below.)
-+ staging - used for trying/testing the app in an environment that is
-            as close to production as possible.
-
-### Settings
-
-The settings are structured according to the environments above.
-Each environment has its own setting file, but some of them depend
-on the other:
-
-+ base.py - holds the settings common to all environments. (Most settings
-            will belong here, e.g. 3rd party and local apps used, etc.)
-+ development.py - Settings used for development. This may contain development
-                   specific django apps (e.g. django-debug-toolbar, more
-                   verbose logging, test runner setup, etc.)
-+ local.py - This one will be loaded by development.py (at the end) if it
-             exists. It may contain local (developer/machine specific)
-             settings and thus it *should not* be checked into the VCS
-             as it will be different for every project member.
-+ deployment.py - Settings for deployment ('server'). We don't have a 
-                    separate production setting, but only override the 
-                    settings that differ in the staging settings. 
-                    (We *could* have a production setting if necessary, 
-                    that should include deployment, just as staging does.
-                    In that case, the environment name should be updated
-                    in the fabfile.)
-+ staging.py - contains (overrides) settings that differ from the production
-               environment. E.g.: database credentials, logging verbosity,
-               etc. Ideally this file is *very* minimal.
-
-### Requirements
-
-Requirements are also structured according to the environments, but are a bit
-simpler. We only have base, development and deployment ones. Note, that there
-is no staging requirements as that would mean that the staging and production
-server differ too much to be meaningful.
-
-Experimental: requirements (*.txt files) are generated from the *.in files.
-The .in files should pin the requirements where it's necessary (e.g. needing
-a package version of at least X) and should only include packages that are
-needed by the project (and not packages that are only depended on by
-other packages). The requirements are then generated using the pip-compile
-tool into the according .txt files (e.g. deployment.in -> deployment.txt).
-
-The .txt files will contain *all* requirements for that environment
-(i.e. there will be no base.txt included by deployment.txt). The .txt
-files should also be checked into the VCS but not edited manually.
-
-When deploying the project, the deploy script will use the matching
-.txt file from the requirements directory. To keep the local (development)
-requirements up to date, you should run:
-
+# Install
 ```
 (env) $ pip install -r requirements/development.txt
 ```
@@ -144,7 +49,7 @@ Running using docker-compose
 ============================
 
 ```sh
-git clone git@github.com:hearteyes/backend.git
+git clone git@github.com:smart-t17/heartface.git
 cd backend
 docker-compose up -d
 ```
